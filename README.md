@@ -5,6 +5,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 An intelligent Streamlit application that converts handwritten mathematical solutions to editable text and automatically grades them using advanced symbolic validation and AI-powered evaluation.
+<img width="1906" height="858" alt="image" src="https://github.com/user-attachments/assets/255b4354-569d-44ab-b81e-93d4bd52e519" />
+<img width="1915" height="847" alt="image" src="https://github.com/user-attachments/assets/46f1dfce-cea5-4d2b-bbc8-5de3d4ddb54c" />
+<img width="1902" height="867" alt="image" src="https://github.com/user-attachments/assets/5da1e4d9-2e18-4f1e-a04e-5bd14a4f1dbe" />
+
+
 
 ## 🚀 Features
 
