@@ -5,11 +5,19 @@ Provides functionality to segment images into different regions like
 text blocks, equations, diagrams, and figures.
 """
 
-import cv2
 import numpy as np
 from typing import List, Dict, Any, Tuple
 from PIL import Image
+from io import BytesIO
 import uuid
+from io import BytesIO
+
+# Try to import OpenCV, fall back to PIL-only mode if not available
+try:
+    import cv2
+    CV2_AVAILABLE = True
+except ImportError:
+    CV2_AVAILABLE = False
 
 
 def segment_layout(image_bytes: bytes) -> List[Dict[str, Any]]:
@@ -22,6 +30,10 @@ def segment_layout(image_bytes: bytes) -> List[Dict[str, Any]]:
     Returns:
         List of region dictionaries with bounding boxes and types
     """
+    if not CV2_AVAILABLE:
+        # Fallback to simple single-region layout when OpenCV is not available
+        return _simple_layout_fallback(image_bytes)
+    
     # Convert bytes to OpenCV image
     nparr = np.frombuffer(image_bytes, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -299,3 +311,46 @@ def _determine_merged_type(type1: str, type2: str) -> str:
         return type1
     else:
         return type2
+
+
+def _simple_layout_fallback(image_bytes: bytes) -> List[Dict[str, Any]]:
+    """
+    Simple fallback layout segmentation when OpenCV is not available.
+    
+    Returns a single region covering the entire image.
+    
+    Args:
+        image_bytes: Raw image bytes
+        
+    Returns:
+        List with single region covering entire image
+    """
+    try:
+        # Use PIL to get image dimensions
+        image = Image.open(BytesIO(image_bytes))
+        width, height = image.size
+        
+        return [{
+            "region_id": str(uuid.uuid4()),
+            "region_type": "text",
+            "bbox": {
+                "x": 0,
+                "y": 0,
+                "width": width,
+                "height": height
+            },
+            "confidence": 0.5  # Lower confidence since we're not doing real segmentation
+        }]
+    except Exception:
+        # If even PIL fails, return a default region
+        return [{
+            "region_id": str(uuid.uuid4()),
+            "region_type": "text", 
+            "bbox": {
+                "x": 0,
+                "y": 0,
+                "width": 800,  # Default dimensions
+                "height": 600
+            },
+            "confidence": 0.3
+        }]

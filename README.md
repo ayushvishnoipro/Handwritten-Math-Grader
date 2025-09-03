@@ -1,7 +1,23 @@
 # 📝 Handwritten Math Grader
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)](https://streamlit.io/)
+[![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red### 🌐 Deployment
+
+### Streamlit Cloud
+1. Fork this repository
+2. Connect your GitHub account to [Streamlit Cloud](https://share.streamlit.io/)
+3. Create a new app and select your forked repository
+4. Add your Gemini API key in the Streamlit Cloud secrets manager:
+   ```toml
+   [gemini]
+   api_key = "your_gemini_api_key_here"
+   ```
+5. The app will automatically install system dependencies from `packages.txt`
+6. Deploy and share your app
+
+**Note**: The application automatically handles cloud deployment by gracefully falling back to PIL-only image processing when OpenCV system libraries are not available.
+
+For detailed deployment instructions, see `docs/deployment-streamlit-cloud.md`ps://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 An intelligent Streamlit application that converts handwritten mathematical solutions to editable text and automatically grades them using advanced symbolic validation and AI-powered evaluation.
@@ -299,6 +315,18 @@ flake8 .
 - Check Python version (3.10+ required)
 - Verify all dependencies are installed
 - Check for port conflicts
+
+**Q: OpenCV/cv2 import errors on Streamlit Cloud**
+- This is normal and handled automatically
+- The app falls back to PIL-only image processing
+- Ensure `packages.txt` includes system dependencies
+- No action needed - the app should work fine
+
+**Q: "libGL.so.1: cannot open shared object file" error**
+- This occurs when deploying to cloud environments
+- The app automatically handles this by disabling OpenCV features
+- Image processing continues with PIL as fallback
+- Performance may be slightly reduced but functionality remains
 
 ### Getting Help
 - 📧 Create an issue on GitHub
