@@ -5,11 +5,17 @@ Provides functions to enhance image quality, remove noise,
 and optimize images for text extraction.
 """
 
-import cv2
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 from io import BytesIO
 from typing import Optional
+
+# Try to import cv2, but make it optional for cloud deployment
+try:
+    import cv2
+    CV2_AVAILABLE = True
+except ImportError:
+    CV2_AVAILABLE = False
 
 
 def preprocess_image(image_bytes: bytes, enhance_contrast: bool = True, 
@@ -26,6 +32,15 @@ def preprocess_image(image_bytes: bytes, enhance_contrast: bool = True,
     Returns:
         Preprocessed image as numpy array
     """
+    if CV2_AVAILABLE:
+        return _preprocess_with_opencv(image_bytes, enhance_contrast, denoise, resize_factor)
+    else:
+        return _preprocess_with_pil(image_bytes, enhance_contrast, denoise, resize_factor)
+
+
+def _preprocess_with_opencv(image_bytes: bytes, enhance_contrast: bool = True, 
+                           denoise: bool = True, resize_factor: Optional[float] = None) -> np.ndarray:
+    """Preprocess image using OpenCV (when available)."""
     # Convert bytes to OpenCV image
     nparr = np.frombuffer(image_bytes, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)

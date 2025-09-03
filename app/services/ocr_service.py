@@ -8,13 +8,20 @@ and Tesseract as fallback when Gemini is unavailable.
 import streamlit as st
 import os
 from typing import List, Dict, Any, Optional
-import cv2
 import numpy as np
 from PIL import Image
 import pytesseract
 from io import BytesIO
 import uuid
 import re
+
+# Try to import cv2, but make it optional for cloud deployment
+try:
+    import cv2
+    CV2_AVAILABLE = True
+except ImportError:
+    CV2_AVAILABLE = False
+    st.warning("OpenCV not available. Some image preprocessing features will be limited.")
 
 # Load environment variables
 try:
